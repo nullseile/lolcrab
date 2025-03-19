@@ -141,6 +141,10 @@ pub struct Opt {
     #[arg(long)]
     pub speed: Option<u8>,
 
+    /// Z value
+    #[arg(short = 'z', long, value_name = "NUM")]
+    pub z: Option<f64>,
+
     /// Activate linear mode
     #[arg(short = 'l', long, help_heading = Some("Linear Mode"))]
     pub linear: bool,

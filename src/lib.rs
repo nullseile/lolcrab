@@ -53,12 +53,13 @@ pub use cli::{Gradient, Opt};
 /// ```
 pub struct Lolcrab {
     pub gradient: Box<dyn colorgrad::Gradient>,
-    pub noise: Box<dyn noise::NoiseFn<f64, 2>>,
+    pub noise: Box<dyn noise::NoiseFn<f64, 3>>,
     noise_scale: f64,
     invert: bool,
     tab_width: isize,
     x: isize,
     y: isize,
+    z: f64,
 
     linear: bool,
     shift_x: f32,
@@ -75,7 +76,7 @@ impl Lolcrab {
     #[must_use]
     pub fn new(
         gradient: Option<Box<dyn colorgrad::Gradient>>,
-        ns: Option<Box<dyn noise::NoiseFn<f64, 2>>>,
+        ns: Option<Box<dyn noise::NoiseFn<f64, 3>>>,
     ) -> Self {
         let angle = fastrand::f32() * TAU;
         let distance = 0.017;
@@ -87,6 +88,7 @@ impl Lolcrab {
             tab_width: 4,
             x: 0,
             y: 0,
+            z: 0.0,
 
             linear: false,
             shift_x: angle.cos() * distance / 2.0,
@@ -188,6 +190,7 @@ impl Lolcrab {
         let position = self.noise.get([
             self.x as f64 * self.noise_scale,
             self.y as f64 * self.noise_scale * 2.0,
+            self.z * self.noise_scale,
         ]) as f32;
         self.gradient.at(remap(position, -0.5, 0.5, -0.1, 1.1))
     }
@@ -421,6 +424,9 @@ impl From<Opt> for Lolcrab {
         lol.set_invert(cmd.invert);
         if let Some(speed) = cmd.speed {
             lol.set_anim_speed(speed);
+        }
+        if let Some(z) = cmd.z {
+            lol.z = z;
         }
         if let Some(duration) = cmd.duration {
             lol.set_anim_duration(duration as usize);
