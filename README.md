@@ -14,6 +14,8 @@ Like [`lolcat`](https://github.com/busyloop/lolcat) but with [noise](https://en.
 
 Pre-compiled binaries for Linux, macOS and Windows is avaliable on [release page](https://github.com/mazznoer/lolcrab/releases).
 
+[![Packaging status](https://repology.org/badge/vertical-allrepos/lolcrab.svg)](https://repology.org/project/lolcrab/versions)
+
 ### Cargo
 
 `lolcrab` can be installed using [cargo](https://www.rust-lang.org/tools/install).
@@ -46,6 +48,22 @@ Options:
       --speed <SPEED>          Animation speed
   -h, --help                   Print help
   -V, --version                Print version
+```
+
+## Config File
+
+`lolcrab` can be configured using a config file. Run the following command to find out config file location.
+
+```
+lolcrab --config-file
+```
+
+Example config:
+
+```text
+--linear
+--gradient fruits
+--spread 15
 ```
 
 ## Using `lolcrab` as a Library
