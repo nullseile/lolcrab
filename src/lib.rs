@@ -164,6 +164,14 @@ impl Lolcrab {
         self.y += n_row;
     }
 
+    pub fn set_z(&mut self, z: f64) {
+        self.z = z;
+    }
+
+    pub fn step_z(&mut self, z_step: f64) {
+        self.z += z_step;
+    }
+
     #[doc(hidden)]
     pub fn reset_col(&mut self) {
         self.x = 0;
