@@ -52,8 +52,8 @@ pub use cli::{Gradient, Opt};
 /// # }
 /// ```
 pub struct Lolcrab {
-    pub gradient: Box<dyn colorgrad::Gradient>,
-    pub noise: Box<dyn noise::NoiseFn<f64, 3>>,
+    pub gradient: Box<dyn colorgrad::Gradient + Send>,
+    pub noise: Box<dyn noise::NoiseFn<f64, 3> + Send>,
     noise_scale: f64,
     invert: bool,
     tab_width: isize,
@@ -75,8 +75,8 @@ pub struct Lolcrab {
 impl Lolcrab {
     #[must_use]
     pub fn new(
-        gradient: Option<Box<dyn colorgrad::Gradient>>,
-        ns: Option<Box<dyn noise::NoiseFn<f64, 3>>>,
+        gradient: Option<Box<dyn colorgrad::Gradient + Send>>,
+        ns: Option<Box<dyn noise::NoiseFn<f64, 3> + Send>>,
     ) -> Self {
         let angle = fastrand::f32() * TAU;
         let distance = 0.017;
@@ -187,6 +187,19 @@ impl Lolcrab {
     pub fn randomize_position(&mut self) {
         self.x = 0;
         self.y = fastrand::isize(-999_999..999_999);
+    }
+
+    pub fn get_color_at(&self, x: isize, y: isize, z: f64) -> Color {
+        if self.linear {
+            let t = self.offset + x as f32 * self.shift_x + y as f32 * self.shift_y;
+            return self.gradient.at(modulo(t, 1.0));
+        }
+        let position = self.noise.get([
+            x as f64 * self.noise_scale,
+            y as f64 * self.noise_scale * 2.0,
+            z * self.noise_scale,
+        ]) as f32;
+        self.gradient.at(remap(position, -0.5, 0.5, -0.1, 1.1))
     }
 
     #[doc(hidden)]
